@@ -19,9 +19,23 @@ df["qty_ordered"] = pd.to_numeric(df["qty_ordered"], errors="coerce").fillna(0)
 df["discount_amount"] = pd.to_numeric(df["discount_amount"], errors="coerce").fillna(0)
 df["Discount_Percent"] = pd.to_numeric(df["Discount_Percent"], errors="coerce").fillna(0)
 
-# рахуєм собівартість та чистий прибуток
-df["cost"] = df["price"] * 0.65 * df["qty_ordered"]
-df["profit"] = df["total"] - df["cost"]
+# диференційована собівартість та розрахунок чистого прибутку
+cost_ratio_by_cat = {
+    "Mobiles & Tablets": 0.78,
+    "Appliances": 0.72,
+    "Entertainment": 0.75,
+    "Computing": 0.76,
+    "Women's Fashion": 0.55,
+    "Men's Fashion": 0.55,
+    "Beauty & Grooming": 0.50,
+    "Home & Living": 0.60,
+    "Superstore": 0.70,
+    "Kids & Baby": 0.62,
+    "Others": 0.65
+}
+df["cost_ratio"] = df["category"].map(cost_ratio_by_cat).fillna(0.70)
+df["cost"] = (df["total"] * df["cost_ratio"]).round(2)
+df["profit"] = (df["total"] - df["cost"]).round(2)
 df["month_year"] = df["order_date"].dt.to_period("M").astype(str)
 
 # створюєм dash додаток
@@ -128,7 +142,7 @@ def update_dashboard(selected_region, selected_category):
         ])
     ]
 
-    # графік 1: щомісячна динаміка виручки та прибутку
+    # графік 1: щомісячна динаміка виручки та чистого прибутку
     monthly_data = filtered.groupby("month_year").agg(revenue=("total", "sum"), profit=("profit", "sum")).reset_index()
     fig1 = go.Figure()
     fig1.add_trace(go.Scatter(x=monthly_data["month_year"], y=monthly_data["revenue"] / 1e6, mode="lines+markers", name="Виручка (млн $)", line=dict(color="#3498db", width=3)))
