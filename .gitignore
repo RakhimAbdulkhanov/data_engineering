@@ -20,3 +20,5 @@ venv/
 *.log
 tasks/
 reference/
+guides/
+conspect.*
