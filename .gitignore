@@ -3,6 +3,7 @@ plots/
 temp_plots/
 code_screenshots/
 build_report.py
+build_*.py
 *.docx
 ~$*.docx
 
@@ -21,4 +22,4 @@ venv/
 tasks/
 reference/
 guides/
-conspect.*
+*conspect*

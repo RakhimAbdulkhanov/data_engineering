@@ -176,4 +176,4 @@ def update_dashboard(selected_region, selected_category):
     return kpis, fig1, fig2, fig3, fig4
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8050)
+    app.run(debug=False, port=8050)
